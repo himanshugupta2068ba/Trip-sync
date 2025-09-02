@@ -13,6 +13,7 @@ main().then(()=>{
 }).catch((error)=>{
     console.error("Error connecting to MongoDB:", error);
 });
+
 async function main() {
     await mongoose.connect(MONGO_URL)
 }
@@ -49,10 +50,14 @@ app.get("/listing/:id",async (req,res)=>{
 });
 
 //create route
-app.post("/listings",async(req,res)=>{
-    const newListing=new Listing(req.body.listing)
-    await newListing.save();
-    res.redirect("/listing");
+app.post("/listings",async(req,res,next)=>{
+    try{
+        const newListing=new Listing(req.body.listing)
+        await newListing.save();
+        res.redirect("/listing");
+    }catch(error){
+        next(error);
+    }
 })
 //edit route
 app.get("/listings/:id/edit",async(req,res)=>{
@@ -92,6 +97,11 @@ app.delete("/listings/:id",async(req,res)=>{
 //       res.send("successful")
 
 // })
+
+app.use((error,req,res,next)=>{
+    res.send("Something went wrong")
+})
+
 app.listen(8000,()=>{
     console.log("Server is running on port 8000");
 })
