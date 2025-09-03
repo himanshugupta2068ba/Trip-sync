@@ -6,6 +6,10 @@ const path=require("path")
 const MONGO_URL="mongodb://127.0.0.1:27017/wanderlust";
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
+const {listingSchema} = require("./schema.js");
+
 exports.MONGO_URL = MONGO_URL;
 // Connect to MongoDB
 main().then(()=>{
@@ -30,10 +34,21 @@ app.get("/",(req,res)=>{
 });
 
 
-app.get("/listing",async (req,res)=>{
+const validateListing = (req,res,next) => {
+    let {error} = listingSchema.validate(req.body);
+    if (error) {
+        let errMsg=error.details[0].map((el)=>el.message).join(",");
+        throw new ExpressError(errMsg,400);
+    }
+    else{
+        next();
+    }
+};
+
+app.get("/listings",wrapAsync(async (req,res)=>{
     const allListings=await Listing.find({});
     res.render("listings/index.ejs",{allListings});
-})
+}));
 
 //new routes
 app.get("/listings/new",(req,res)=>{
@@ -41,48 +56,44 @@ app.get("/listings/new",(req,res)=>{
 })
 
 //show routes
-app.get("/listing/:id",async (req,res)=>{
+app.get("/listings/:id",wrapAsync(async (req,res)=>{
     const listing=await Listing.findById(req.params.id);
     if(!listing){
         return res.status(404).send("Listing not found");
     }
     res.render("listings/show.ejs",{listing});
-});
+}));
 
 //create route
-app.post("/listings",async(req,res,next)=>{
-    try{
-        const newListing=new Listing(req.body.listing)
-        await newListing.save();
-        res.redirect("/listing");
-    }catch(error){
-        next(error);
-    }
-})
+app.post("/listings",
+    validateListing,
+    wrapAsync(async(req,res,next)=>{
+    const newListing=new Listing(req.body.listing)
+    await newListing.save();
+    res.redirect("/listings");
+}))
+   
 //edit route
-app.get("/listings/:id/edit",async(req,res)=>{
+app.get("/listings/:id/edit",
+    validateListing,
+    wrapAsync(async(req,res)=>{
     const listing=await Listing.findById(req.params.id);
-    if(!listing){
-        return res.status(404).send("Listing not found");
-    }
     res.render("listings/edit.ejs",{listing});
-})
+}))
 //update route
-app.put("/listings/:id",async(req,res)=>{
+app.put("/listings/:id",
+    validateListing,
+    wrapAsync(async(req,res)=>{
     const listing=await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
-    if(!listing){
-        return res.status(404).send("Listing not found");
-    }
-    res.redirect("/listing/"+listing._id);
-})
+    res.redirect("/listings/"+listing._id);
+}))
 //delete
-app.delete("/listings/:id",async(req,res)=>{
+app.delete("/listings/:id",
+    validateListing,
+    wrapAsync(async(req,res)=>{
     const listing=await Listing.findByIdAndDelete(req.params.id);
-    if(!listing){
-        return res.status(404).send("Listing not found");
-    }
-    res.redirect("/listing");
-})
+    res.redirect("/listings");
+}))
 // app.get("/textListing",async(req,res)=>{
 //     const sample=new Listing({
 //         title:"Beautiful Beach House",
@@ -97,9 +108,14 @@ app.delete("/listings/:id",async(req,res)=>{
 //       res.send("successful")
 
 // })
-
+// app.all("*",(req,res,next)=>{
+//     throw new ExpressError("Page Not Found",404);
+// })
 app.use((error,req,res,next)=>{
-    res.send("Something went wrong")
+    console.error(error);
+    let {statusCode=500,message="Something went wrong"}=error;
+    // res.status(statusCode).send(message);
+    res.render("error.ejs",{message});
 })
 
 app.listen(8000,()=>{
