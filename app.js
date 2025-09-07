@@ -9,7 +9,8 @@ const ejsMate=require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema} = require("./schema.js");
-
+const Review=require("./model/review.js");
+const { reviewSchema } = require("./schema.js");
 exports.MONGO_URL = MONGO_URL;
 // Connect to MongoDB
 main().then(()=>{
@@ -52,7 +53,7 @@ app.get("/listings",wrapAsync(async (req,res)=>{
 
 //new routes
 app.get("/listings/new",(req,res)=>{
-    res.render("listings/new.ejs");
+    res.render("listings/new.ejs");     
 })
 
 //show routes
@@ -94,6 +95,21 @@ app.delete("/listings/:id",
     const listing=await Listing.findByIdAndDelete(req.params.id);
     res.redirect("/listings");
 }))
+
+//reviews
+app.post("/listings/:id/reviews",wrapAsync(async(req,res)=>{
+    const listing=await Listing.findById(req.params.id);
+    const review={
+        rating:req.body.review.rating,
+        comment:req.body.review.comment
+    }
+    listing.reviews.push(review);
+    await listing.save();
+    res.redirect("/listings/"+listing._id);
+}));
+
+
+
 // app.get("/textListing",async(req,res)=>{
 //     const sample=new Listing({
 //         title:"Beautiful Beach House",
