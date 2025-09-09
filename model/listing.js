@@ -23,6 +23,13 @@ const listingSchema=new Schema(
         ],
     }
 );
+listingSchema.post("findOneAndDelete",async(doc)=>{
+    if(doc){
+        await review.deleteMany({
+            _id:{$in:doc.reviews}
+        })
+    }
+});
 
 const Listing=mongoose.model("Listing",listingSchema);
 module.exports=Listing;
