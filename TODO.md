@@ -1,0 +1,5 @@
+- [ ] Remove duplicate require in app.js
+- [ ] Remove review routes from routes/listing.js
+- [ ] Fix validateListing in routes/listing.js: remove from edit route, fix error.details.map
+- [ ] Fix render path in routes/listing.js
+- [ ] Fix validateReview in routes/review.js: error.details.map
