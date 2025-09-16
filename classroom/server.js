@@ -1,47 +1,42 @@
 const express=require("express");
 const app=express();
+const posts=require("./routes/post.js");
+const user=require("./routes/user.js")
+//cookie-parsor
+const cookieparser=require("cookie-parser");
+app.use(cookieparser("secretcode"));
 
-//index - users
-app.get("/users",(req,res)=>{
-    req.send("GET for users");
-})
-//show-users
-app.get("/users/:id",(req,res)=>{
-    res.send("Get for show users");
-})
-
-//post routes
-app.post("/users",(req,res)=>{
-    res.send("POST ")
+//signed cookies
+app.get("/getsignedcookie",(req,res)=>{
+    res.cookie("signedCookie","signedValue",{signed:true});
+    res.send("send you some signed cookies");
+    
 })
 
-//delete user
-app.delete("/users/:id",(req,res)=>{
-    res.send("Delete for users")
+app.get("verify",(req,res)=>{
+    console.log(req.signedCookies);
+    res.send("verified cookies")
 })
 
-
-//posts
-//index 
-app.get("/posts",(req,res)=>{
-    req.send("GET for posts");
+app.get("/getcookies",(req,res)=>{
+    res.cookie("hello","namaste");
+    res.send("sendyou some cookies");
+    // res.cookie("")
 })
-//show-users
-app.get("/posts/:id",(req,res)=>{
-    res.send("Get for show posts");
-})
+app.use("/posts",posts);
+app.use("/users",user);
 
-//post routes
-app.post("/posts",(req,res)=>{
-    res.send("POST ")
+app.get("/greet",(req,res)=>{
+    /* The line `let {name="anonymous"}=req.cookies;` is using object destructuring in JavaScript to
+    extract the value of the "name" property from the `req.cookies` object. If the "name" property
+    is not present in `req.cookies`, it will default to "anonymous". This line essentially assigns
+    the value of the "name" property from `req.cookies` to the variable `name`, with a default value
+    of "anonymous" if the property is not found. */
+    let {name="anonymous"}=req.cookies;
+    res.send(`Hi,${name}`);
 })
-
-//delete posts
-app.delete("/posts/:id",(req,res)=>{
-    res.send("Delete for users")
-})
-
 app.get("/",(req,res)=>{
+    console.dir(req.cookies)
     res.send("working")
 })
 app.listen(3000,()=>{
