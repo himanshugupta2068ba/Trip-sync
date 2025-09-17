@@ -13,7 +13,8 @@ const Review=require("./model/review.js");
 const listings=require("./routes/listing.js");
 // const review = require("./model/review.js");
 const reviews=require("./routes/review.js");
-
+const session=require("express-session")
+const flash=require("connect-flash");
 // const { reviewSchema } = require("./schema.js");
 exports.MONGO_URL = MONGO_URL;
 // Connect to MongoDB
@@ -26,6 +27,27 @@ main().then(()=>{
 async function main() {
     await mongoose.connect(MONGO_URL)
 }
+
+const sessionoptions={
+    secret:"secretcode",
+    resave:false,
+    saveUninitialized:false,
+    cookie:{
+        expires:Date.now()+1000*60*60*24*7,
+        httpOnly:true,
+        secure:false,
+        maxAge:1000*60*60*24*7
+    }
+}
+
+
+app.use(session(sessionoptions));
+app.use(flash());
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    next();
+})
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
