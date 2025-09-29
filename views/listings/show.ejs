@@ -3,9 +3,12 @@
     <div class="col-8 offset-2">
     <h1>listing.<%= listing.title %></h1>
     </div>
+
    <div class="card col-8 offset-2 mt-2 show-card listing-card ">
   <img src="<%= listing.images %>" class="card-img-top show-img" alt="<%= listing.title %>"">
+
   <div class="card-body">
+       Owned By <i><%= listing.owner.username %></i><br>
     <b class="card-title"><%= listing.title %>"</b>
     <p class="card-text">
         <%= listing.description %><br>
