@@ -38,6 +38,7 @@ router.post('/login',saveRedirectUrl, passport.authenticate("local", {
   failureFlash: true,
 }),
 async(req,res)=>{
+  // console.log(req.user);
   req.flash('success', 'You are logged in!');
   res.redirect(res.locals.redirectUrl || '/listings');
 }
