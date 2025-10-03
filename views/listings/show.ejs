@@ -5,7 +5,7 @@
     </div>
 
    <div class="card col-8 offset-2 mt-2 show-card listing-card ">
-  <img src="<%= listing.images %>" class="card-img-top show-img" alt="<%= listing.title %>"">
+  <img src="<%= listing.images.url || listing.images %>" class="card-img-top show-img" alt="<%= listing.title %>"">
 
   <div class="card-body">
        Owned By <i><%= listing.owner.username %></i><br>

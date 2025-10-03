@@ -21,12 +21,20 @@ module.exports.show=async (req,res)=>{
     }
 }
 module.exports.create=async(req,res,next)=>{
+   try{ let url=req.file.path;
+    let filename=req.file.filename;
+    // console.log(req.file);
     const newListing=new Listing(req.body.listing);
     // console.log(req.user);
     newListing.owner=req.user._id;
+    newListing.images={url,filename};
     await newListing.save();
     req.flash("success","Listing added successfully");
     res.redirect("/listings");
+   }catch(e){
+    req.flash("error","Image upload failed");
+    res.redirect("listings/new");
+   }
 }
 module.exports.edit=async(req,res)=>{
     const listing=await Listing.findById(req.params.id);
