@@ -6,29 +6,11 @@ const {listingSchema,reviewSchema} = require("../schema.js");
 const Review=require("../model/review.js");
 const Listing=require("../model/listing.js");
 const {isLoggedIn, isOwner,validateReview,isReviewAuthor}=require("../middleware.js")
-
+const reviewController=require("../controllers/reviews");
 
 //post review
-router.post("/",isLoggedIn,validateReview,wrapAsync(async(req,res)=>{
-    let listing=await Listing.findById(req.params.id);
-    let review=new Review(req.body.review);
-    review.author=req.user._id;
-    console.log(review);
-    listing.reviews.push(review);
-    await listing.save();
-    await review.save();
-       req.flash("success","review added successfully");
-    res.redirect("/listings/"+listing._id);
-}));
+router.post("/",isLoggedIn,validateReview,wrapAsync(reviewController.post));
 
 //delete review
-router.delete("/:reviewId",isLoggedIn,isReviewAuthor,wrapAsync(async(req,res)=>{
-    const {id,reviewId}=req.params;
-    let listing=await Listing.findById(id);
-    listing.reviews.pull(reviewId);
-    await listing.save();
-    await Review.findByIdAndDelete(reviewId);
-    req.flash("success","Review deleted successfully");
-    res.redirect("/listings/"+listing._id);
-}));
+router.delete("/:reviewId",isLoggedIn,isReviewAuthor,wrapAsync(reviewController.delete));
 module.exports=router;
