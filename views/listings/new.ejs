@@ -47,7 +47,10 @@
     <div class="row">
     <div class="mb-3 col-md-5">
         <label for="location" class="form-label">Location</label>
-        <input name="listing[location]" placeholder="Enter location" class="form-control" required/>
+        <!-- <input name="listing[location]" placeholder="Enter location" class="form-control" required/> -->
+         <input type="text" name="listing[street]" placeholder="Street" class="form-control">
+  <input type="text" name="listing[city]" placeholder="City" class="form-control" required>
+  <input type="text" name="listing[state]" placeholder="State" class="form-control">
         <div class="invalid-feedback">Location is required</div>
         <div class="valid-feedback">Location look good</div>
     </div>

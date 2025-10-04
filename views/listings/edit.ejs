@@ -24,12 +24,22 @@
             <label for="images" class="form-label">Images</label>
             <input name="listing[image]"  class="form-control" type="file" >
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label for="location" class="form-label">Location</label>
             <input name="listing[location]" value="<%= listing.location %>" class="form-control" type="text" required>
                   <div class="valid-feedback">Location look good</div>
            <div class="invalid-feedback">Location look not good</div>
-        </div>
+        </div> -->
+        <div class="mb-3 col-md-5">
+        <label for="location" class="form-label">Location</label>
+        <!-- <input name="listing[location]" placeholder="Enter location" class="form-control" required/> -->
+         <input type="text" name="listing[street]" placeholder="Street" class="form-control">
+  <input type="text" name="listing[city]" placeholder="City" class="form-control" required>
+  <input type="text" name="listing[state]" placeholder="State" class="form-control">
+        <div class="invalid-feedback">Location is required</div>
+        <div class="valid-feedback">Location look good</div>
+    </div>
+
         <div class="mb-3">
             <label for="price" class="form-label">Price</label>
             <input name="listing[price]" value="<%= listing.price %>" class="form-control" type="number" required>

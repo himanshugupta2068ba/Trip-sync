@@ -5,10 +5,10 @@ module.exports.listingSchema=Joi.object({
     title:Joi.string().required(),
     description:Joi.string().required(),
    image: Joi.string().uri().allow("", null).optional(),
-    location:Joi.string().required(),
+    location:Joi.string().allow("", null).optional(),
     price:Joi.number().min(0).required(),
     country:Joi.string().required()
-  })
+  }).unknown(true)
 
 });
 
