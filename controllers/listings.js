@@ -43,11 +43,21 @@ module.exports.edit=async(req,res)=>{
         res.redirect("/listings");
     }
     else{
-    res.render("listings/edit.ejs",{listing});
+        let originalImageUrl=listing.images.url;
+        if(typeof req.file!=="undefined"){
+         originalImageUrl=originalImageUrl.replace("/upload","/upload/h_300,w_250");
+        }
+    res.render("listings/edit.ejs",{listing,originalImageUrl});
     }
 }
 module.exports.update=async(req,res)=>{      
     const listing=await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
+   if(typeof req.file!=="undefined"){
+    let url=req.file.path;   
+    let filename=req.file.filename;
+    listing.images={url,filename};
+    await listing.save();
+   }
     req.flash("success","Listing updated successfully");
     res.redirect("/listings/"+listing._id);
 }
