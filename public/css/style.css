@@ -27,7 +27,7 @@ body{
 
 /* footer */
 .f-info-links a{
-    color: #222;
+    color: #f9f8f8;
     text-decoration: none;
     margin: 0.5rem;
 }
@@ -46,10 +46,12 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
+ 
 }
 .f-info-socials i{
   font-size: 1.75rem;
   margin-right: 1rem;
+    color: #f9f8f8;
 }
 .f-info{
     text-align: center;
@@ -58,7 +60,7 @@ body{
     flex-wrap: wrap;
     justify-content: center;
     align-items: space-evenly;
-    background-color: rgb(224, 223, 223);
+    background: linear-gradient( #b92d2d, #ea0707);
 }
 
 /* cards */
@@ -107,3 +109,13 @@ body{
     padding-right: 0 !important;
 }
 
+/* //home page */
+.home-hero {
+    background: url('/landing.png') no-repeat center center/cover;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}

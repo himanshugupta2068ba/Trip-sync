@@ -1,6 +1,10 @@
 const Listing=require("../model/listing");
 const { geocodeAddress } = require('../utils/geocoder');
 
+module.exports.home=(req,res)=>{
+    res.render("landing/home.ejs");
+}
+
 module.exports.index=async (req,res)=>{
     const allListings=await Listing.find({});
     res.render("listings/index.ejs",{allListings});
@@ -139,3 +143,4 @@ module.exports.delete=async(req,res)=>{
        req.flash("success","Listing deleted successfully");
     res.redirect("/listings");
 }
+

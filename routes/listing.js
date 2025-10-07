@@ -11,6 +11,9 @@ const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage })
 const listingController= require("../controllers/listings");
 
+//home route
+router.get("/home",listingController.home);
+
 //create route and get route
 router
    .route("/")
