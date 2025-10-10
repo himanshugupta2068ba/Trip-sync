@@ -85,7 +85,7 @@ app.use("/listings",listingsRouter);
 app.use("/listings/:id/reviews",reviewsRouter);
 app.use("/",userRouter);
 app.get("/",(req,res)=>{
-    res.send("Hello World");
+    res.render("landing/home.ejs");
 });
 
 

@@ -12,7 +12,7 @@ const upload = multer({ storage })
 const listingController= require("../controllers/listings");
 
 //home route
-router.get("/home",listingController.home);
+// router.get("/home",listingController.home);
 
 //create route and get route
 router
