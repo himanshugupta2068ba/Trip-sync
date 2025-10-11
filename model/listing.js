@@ -15,10 +15,29 @@ const listingSchema=new Schema(
   city: String,
   state: String,
   country: String,
+  location: String,
+ category: {
+  type: String,
+  enum: [
+    'Trending',
+    'Rooms',
+    'Iconic Cities',
+    'Mountains',
+    'Castles',
+    'Beaches',
+    'Campground',
+    'Farms',
+    'Arctic',
+    'Resorts',
+    'Forest Stay',
+    'Lake View',
+    'Heritage',
+    'Adventure',
+    'Others'
+  ],
+},
 
   // human-readable (from geocoder)
-  location: String,
-
   // GeoJSON point: [lng, lat]
   geometry: {
     type: {

@@ -11,6 +11,9 @@ const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage })
 const listingController= require("../controllers/listings");
 
+
+//search route
+router.get("/search", wrapAsync(listingController.searchResults));
 //home route
 // router.get("/home",listingController.home);
 
@@ -51,6 +54,9 @@ router.get("/:id/edit",
     isLoggedIn,isOwner,
     validateListing,
     wrapAsync(listingController.edit))
+
+//category filter
+router.get("/category/:category",wrapAsync(listingController.categoryFilter));
 
 
 

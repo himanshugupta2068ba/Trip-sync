@@ -144,3 +144,37 @@ module.exports.delete=async(req,res)=>{
     res.redirect("/listings");
 }
 
+// controllers/listingController.js
+module.exports.categoryFilter = async (req, res) => {
+  const { category } = req.params;
+  // Optional: Validate against allowed categories
+  const allowedCategories = [
+    'Trending','Rooms','Iconic Cities','Mountains','Castles','Beaches','Campground',
+    'Farms','Arctic','Resorts','Forest Stay','Lake View','Heritage','Adventure'
+  ];
+  if (!allowedCategories.includes(category)) {
+    req.flash('error', 'Invalid category selected');
+    return res.redirect('/listings');
+  }
+
+  const filteredListings = await Listing.find({ category });
+  res.render("listings/category.ejs", { filteredListings, category });
+};
+
+module.exports.searchResults = async (req, res) => {
+  const { q } = req.query;
+  if (!q || q.trim() === '') {
+    req.flash('error', 'Please enter a search term');
+    return res.redirect('/listings');
+  }
+  const regex = new RegExp(q, 'i'); // case-insensitive search
+  const searchResults = await Listing.find({
+    $or: [
+      { title: regex },
+      { description: regex },
+      { location: regex },
+      { category: regex }
+    ]
+  });
+  res.render("listings/search.ejs", { searchResults, query: q });
+}

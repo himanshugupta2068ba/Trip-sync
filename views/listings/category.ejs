@@ -1,0 +1,66 @@
+<% layout("layouts/boilerplates.ejs") -%>
+<style>
+    .listing-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.listing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.listing-link {
+  text-decoration: none;
+}
+
+h2 i {
+  color: #d63384;
+}
+
+</style>
+<div class="container mt-4">
+  <!-- Category Title -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+      <i class="fa-solid fa-tags me-2"></i> 
+      <%= category %> Listings
+    </h2>
+    <a href="/listings" class="btn btn-outline-dark btn-sm">Back to All</a>
+  </div>
+
+  <!-- If no listings -->
+  <% if (filteredListings.length === 0) { %>
+    <div class="text-center mt-5">
+      <i class="fa-regular fa-face-frown fa-3x mb-3"></i>
+      <h4>No listings found for this category.</h4>
+      <p class="text-muted">Try exploring other categories or check back later!</p>
+    </div>
+  <% } else { %>
+
+  <!-- Listing Cards -->
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+    <% filteredListings.forEach(listing => { %>
+      <div class="col">
+        <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+          <div class="card listing-card h-100 shadow-sm border-0">
+            <img 
+              src="<%= listing.images.url || listing.images %>" 
+              class="card-img-top" 
+              alt="<%= listing.title %>"
+              style="height: 18rem; object-fit: cover;"
+            >
+            <div class="card-body">
+              <h5 class="card-title mb-1"><%= listing.title %></h5>
+              <p class="text-muted mb-1"><i class="fa-solid fa-location-dot me-1"></i> <%= listing.country %></p>
+              <p class="fw-bold mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %>/night</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    <% }); %>
+  </div>
+
+  <% } %>
+</div>

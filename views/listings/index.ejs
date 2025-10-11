@@ -1,24 +1,136 @@
 <% layout("layouts/boilerplates.ejs") -%>
 <body>
-    <h2>All Listings</h2>
+   
     <!-- <form method="GET" action="/listings/new">
         <button>Create New listing</button>
     </form> -->
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 ">
-        <% for(let listing of allListings) { %>
-            <a href="/listings/<%= listing._id %>" class="listing-link">
-         <div class="card col listing-card">
-         <img src="<%= listing.images.url || listing.images %>" class="card-img-top" alt="<%= listing.title %>" style="height: 20rem">
-         <div class="card-img-overlay"><%= listing.country %></div>
-        <div class="card-body">
-        <p class="card-text">
-            <ul>
-            <li><b><%= listing.title %></b></li>
-            <li>&#8377;<%= listing.price.toLocaleString("en-IN") %>/night</li>
-            <li><%= listing.location %></li>
-            </ul>
-        </div>
-      </div></a>
-        <% } %>
+<style>
+  .filters-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    text-decoration: none;
+  }
+
+  /* Left fixed part */
+  .tax-toggle {
+    flex: 0 0 auto; /* don’t shrink or grow */
+    position: sticky;
+    left: 0;
+    background: #fff; /* match your page background */
+    z-index: 10;
+    padding-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* height: 100%; */
+    border: 1px  #d8d3d3;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 0.5rem;
+    height: 3rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+ .filters-scroll a{
+    text-decoration: none;
+    color: inherit;
+ }
+  /* Right scrollable part */
+  .filters-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .filters-scroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  .filter {
+    text-align: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: background-color 0.3s, color 0.3s;
+    flex: 0 0 auto;
+  }
+
+  .filter:hover {
+    background-color: #ede0df;
+    color: rgb(207, 78, 78);
+  }
+
+  .tax-note {
+    color: rgb(96, 95, 95);
+  }
+</style>
+
+<div class="filters-container">
+<div class="filters-scroll" id="filters">
+  <a href="/listings/category/Trending" class="filter"><i class="fa-solid fa-fire"></i><br><p>Trending</p></a>
+  <a href="/listings/category/Rooms" class="filter"><i class="fa-solid fa-bed"></i><br><p>Rooms</p></a>
+  <a href="/listings/category/Iconic Cities" class="filter"><i class="fa-solid fa-mountain-city"></i><br><p>Iconic Cities</p></a>
+  <a href="/listings/category/Mountains" class="filter"><i class="fa-solid fa-mountain"></i><br><p>Mountains</p></a>
+  <a href="/listings/category/Castles" class="filter"><i class="fa-brands fa-fort-awesome"></i><br><p>Castles</p></a>
+  <a href="/listings/category/Beaches" class="filter"><i class="fa-solid fa-person-swimming"></i><br><p>Beaches</p></a>
+  <a href="/listings/category/Campground" class="filter"><i class="fa-solid fa-campground"></i><br><p>Campground</p></a>
+  <a href="/listings/category/Farms" class="filter"><i class="fa-solid fa-cow"></i><br><p>Farms</p></a>
+  <a href="/listings/category/Arctic" class="filter"><i class="fa-solid fa-snowflake"></i><br><p>Arctic</p></a>
+  <a href="/listings/category/Resorts" class="filter"><i class="fa-solid fa-umbrella-beach"></i><br><p>Resorts</p></a>
+  <a href="/listings/category/Forest Stay" class="filter"><i class="fa-solid fa-tree"></i><br><p>Forest Stay</p></a>
+  <a href="/listings/category/Lake View" class="filter"><i class="fa-solid fa-water"></i><br><p>Lake View</p></a>
+  <a href="/listings/category/Heritage" class="filter"><i class="fa-solid fa-vihara"></i><br><p>Heritage</p></a>
+  <a href="/listings/category/Adventure" class="filter"><i class="fa-solid fa-tent"></i><br><p>Adventure</p></a>
+</div>
+
+  <!-- Fixed Left Toggle -->
+  <div class="tax-toggle">
+    <div class="form-check form-switch mb-0">
+      <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+      <label class="form-check-label" for="flexSwitchCheckDefault">Display With Taxes</label>
     </div>
-</body>
+  </div>
+</div>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+  <% for(let listing of allListings) { %>
+    <a href="/listings/<%= listing._id %>" class="listing-link">
+      <div class="card col listing-card">
+        <img src="<%= listing.images.url || listing.images %>" class="card-img-top" alt="<%= listing.title %>" style="height: 20rem">
+        <div class="card-img-overlay"><%= listing.country %></div>
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= listing.title %></b><br>
+            <span class="price" data-base="<%= listing.price %>">
+              &#8377;<%= listing.price.toLocaleString("en-IN") %>
+            </span>/night <i class="tax-note"></i>
+          </p>
+        </div>
+      </div>
+    </a>
+  <% } %>
+</div>
+<script>
+  const taxSwitch = document.getElementById('flexSwitchCheckDefault');
+  const priceElements = document.querySelectorAll('.price');
+  const taxNotes = document.querySelectorAll('.tax-note');
+
+  taxSwitch.addEventListener('change', () => {
+    const includeTax = taxSwitch.checked;
+    priceElements.forEach((priceEl, i) => {
+      const basePrice = parseFloat(priceEl.getAttribute('data-base'));
+      const finalPrice = includeTax ? basePrice * 1.18 : basePrice;
+      priceEl.innerHTML = `&#8377;${finalPrice.toLocaleString("en-IN")}`;
+      taxNotes[i].innerHTML = includeTax ? "(incl. 18% GST)" : "+18% GST";
+    });
+  });
+</script>
