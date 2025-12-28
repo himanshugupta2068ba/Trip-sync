@@ -1,3 +1,5 @@
+https://trip-sync.onrender.com/listings
+
 A minimal, developer-friendly clone of Airbnb focused on core booking functionality: listings, search, booking, user auth, and reviews. Built for learning, rapid prototyping, or as a starter kit for marketplace-based rental apps.
 
 🚀 Project Goal
